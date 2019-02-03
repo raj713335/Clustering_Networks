@@ -15,8 +15,8 @@ class clustering_networks:
 
         for i in range(no_of_particles):
             id=i                                        #creates a id of the particles
-            x_cordinate=random.randint(0,100)           #creates the x cordinate of the particle in the range 0-100 units
-            y_cordinate=random.randint(0,100)           #creates the y cordinate of the particles in the range 0-100 units
+            x_cordinate=round(random.random()*100,2)          #creates the x cordinate of the particle in the range 0-100 units
+            y_cordinate=round(random.random()*100,2)         #creates the y cordinate of the particles in the range 0-100 units
             #print(x_cordinate,y_cordinate)
             no_of_neighbour=random.randint(0,10)        #randomly generates the number of neighbour a ith particle can have
             neighbor_temporary_list=[]
@@ -24,7 +24,7 @@ class clustering_networks:
                 temp=random.randint(0,no_of_particles)
                 neighbor_temporary_list.append(temp)
             particles.append([id,x_cordinate, y_cordinate,neighbor_temporary_list])  # append the position of particles in a list named particle and its neighbour
-            self.print_particles(self,particles)
+        self.print_particles(self,particles)
 
         #print(particles)
 
@@ -38,6 +38,5 @@ class clustering_networks:
 
 
 obj1=clustering_networks()
-for i in range(1):
-    obj1.particle_initilization()
+obj1.particle_initilization()
 
