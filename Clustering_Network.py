@@ -451,9 +451,16 @@ class wireless_sensor_networks:
 
 
 
+        self.visualize_leader(cluster_list,leader_node,file_data)
 
 
+    def visualize_leader(self,cluster_list,leader_node,file_data):
+        time.sleep(4)
+        file_data.close()
         self.__init__()
+
+
+
 
 
 
