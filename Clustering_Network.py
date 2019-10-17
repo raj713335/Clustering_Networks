@@ -417,11 +417,11 @@ class wireless_sensor_networks:
         plt.savefig("WSN_CLUSTER.png")
         plt.show()
 
-        self.analyze(cluster_list, file_data)
+        self.analyze(length,breadth,cluster_list,particles, file_data)
 
 
 
-    def analyze(self,cluster_list,file_data):
+    def analyze(self,length,breadth,cluster_list,particles,file_data):
 
 
         leader_node=[]
@@ -451,10 +451,86 @@ class wireless_sensor_networks:
 
 
 
-        self.visualize_leader(cluster_list,leader_node,file_data)
+        self.visualize_leader(length,breadth,cluster_list,particles,leader_node,file_data)
 
 
-    def visualize_leader(self,cluster_list,leader_node,file_data):
+    def visualize_leader(self,length,breadth,cluster_list,particles,leader_node,file_data):
+
+
+
+        G = nx.Graph()
+
+        for each in particles:
+            G.add_node(each[0], pos=(each[1][0], each[1][1]))
+
+        # pos = nx.get_node_attributes(G, 'pos')
+
+        pos = {}
+
+        for each in particles:
+            pos[each[0]] = (each[1][0], each[1][1])
+
+        """# nx.draw_networkx_labels(G, pos)
+        nx.draw_networkx(G, pos=pos)
+
+        #H = nx.Graph()
+
+        for each in leader_node:
+            G.add_node(each[1][0],pos=(each[1][1][0],each[1][1][1]))
+        
+
+
+        # pos = nx.get_node_attributes(G, 'pos')
+
+        pos = {}
+
+        for each in leader_node:
+            pos[each[1][0]] = (each[1][1][0], each[1][1][1])"""
+
+        simplified_cluster_number = []
+
+        for j in cluster_list:
+            flag = True
+            temp = []
+            for k in range(1, len(j)):
+                if flag == True:
+                    for h in range(0, len(j[k])):
+                        temp.append(j[k][h][0])
+                    flag = False
+                break
+            if len(temp)>0:
+                simplified_cluster_number.append(temp)
+
+        print(simplified_cluster_number)
+
+        for i in range(0,len(leader_node)):
+            #for j in simplified_cluster_number:
+            for k in range(0,len(simplified_cluster_number[i])):
+                print(leader_node[i][1][0],simplified_cluster_number[i][k])
+                if leader_node[i][1][0]!=simplified_cluster_number[i][k]:
+                    G.add_edge(leader_node[i][1][0],simplified_cluster_number[i][k])
+
+
+
+
+
+        # nx.draw_networkx_labels(G, pos)
+        nx.draw_networkx(G, pos=pos,with_labels=True)
+
+        plt.title("CLUSTERING NETWORK'S")
+        plt.xlabel('X-AXIS')
+        plt.ylabel('Y-AXIS')
+        # Limits for the Y  and Yaxis
+        incx = (len(cluster_list) ** 0.5)
+        # plt.ylim(0, breadth)
+        # plt.xlim(0, length)
+        plt.xticks(np.arange(0, length + 1, length // incx))
+        plt.yticks(np.arange(0, breadth + 1, breadth // incx))
+        # plt.plot([lambda x: x[1][0] for x in particles],[lambda y: y[1][1] for y in particles[1][1]],'ro')
+        plt.grid()
+        plt.savefig("WSN_labels2.png")
+        plt.show()
+
         time.sleep(4)
         file_data.close()
         self.__init__()
