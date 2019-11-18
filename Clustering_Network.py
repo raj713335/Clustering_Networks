@@ -6,6 +6,8 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
 import math
+import random as rn
+from numpy.random import choice as np_choice
 
 
 
@@ -437,10 +439,14 @@ class wireless_sensor_networks:
                     min_distance=total_distance
                     id =cluster_value_x[0]
 
+            leader_coordinates=[]
 
             for cluster_value_x in cluster[1]:
                 if id==cluster_value_x[0]:
                     leader_node.append([cluster[0],cluster_value_x])
+
+            for cluster_value_x in leader_node:
+                leader_coordinates.append([cluster_value_x[1][0],cluster_value_x[1][1][0],cluster_value_x[1][1][0]])
 
         file_data.writelines("THE LEADER NODES IN RESPECTIVE CLUSTERS\n")
         for row in leader_node:
@@ -450,8 +456,13 @@ class wireless_sensor_networks:
         print(leader_node)
 
 
+        for row in leader_coordinates:
+            print(row)
+
+
 
         self.visualize_leader(length,breadth,cluster_list,particles,leader_node,file_data)
+        self.ACO_fine_tuning(leader_coordinates,leader_node,file_data,breadth,length,cluster_list,particles)
 
 
     def visualize_leader(self,length,breadth,cluster_list,particles,leader_node,file_data):
@@ -501,12 +512,12 @@ class wireless_sensor_networks:
             if len(temp)>0:
                 simplified_cluster_number.append(temp)
 
-        print(simplified_cluster_number)
+        #print(simplified_cluster_number)
 
         for i in range(0,len(leader_node)):
             #for j in simplified_cluster_number:
             for k in range(0,len(simplified_cluster_number[i])):
-                print(leader_node[i][1][0],simplified_cluster_number[i][k])
+                #print(leader_node[i][1][0],simplified_cluster_number[i][k])
                 if leader_node[i][1][0]!=simplified_cluster_number[i][k]:
                     G.add_edge(leader_node[i][1][0],simplified_cluster_number[i][k])
 
@@ -516,6 +527,19 @@ class wireless_sensor_networks:
 
         # nx.draw_networkx_labels(G, pos)
         nx.draw_networkx(G, pos=pos,with_labels=True)
+
+        H=nx.Graph()
+
+        for each in leader_node:
+            #print(each[1][0], each[1][1][0], each[1][1][1])
+            H.add_node(each[1][0], pos=(each[1][1][0], each[1][1][1]))
+
+        pox = {}
+
+        for each in leader_node:
+            pox[each[1][0]] = (each[1][1][0], each[1][1][1])
+
+        nx.draw_networkx(H, pox, node_size=700, node_color='green')
 
         plt.title("CLUSTERING NETWORK'S")
         plt.xlabel('X-AXIS')
@@ -531,9 +555,223 @@ class wireless_sensor_networks:
         plt.savefig("WSN_labels2.png")
         plt.show()
 
+
+
+
+
+    def ACO_fine_tuning(self,leader_coordinates,leader_node,file_data,breadth,length,cluster_list,particles):
+        print(leader_coordinates)
+
+        data_ACO=[]
+
+        for i in range(0,len(leader_coordinates)):
+            temp=[]
+            for j in range(0,len(leader_coordinates)):
+                if leader_coordinates[i][0]==leader_coordinates[j][0]:
+                    temp.append(np.inf)
+                else:
+                    distance=(((leader_coordinates[i][1]-leader_coordinates[j][1])**2)+((leader_coordinates[i][2]-leader_coordinates[j][2])**2))**0.5
+                    temp.append(distance)
+            data_ACO.append(temp)
+
+        for each in data_ACO:
+            print(each)
+
+        class AntColony(object):
+
+            def __init__(self, distances, n_ants, n_best, n_iterations, decay, alpha=1, beta=1):
+                """
+                Args:
+                    distances (2D numpy.array): Square matrix of distances. Diagonal is assumed to be np.inf.
+                    n_ants (int): Number of ants running per iteration
+                    n_best (int): Number of best ants who deposit pheromone
+                    n_iteration (int): Number of iterations
+                    decay (float): Rate it which pheromone decays. The pheromone value is multiplied by decay, so 0.95 will lead to decay, 0.5 to much faster decay.
+                    alpha (int or float): exponenet on pheromone, higher alpha gives pheromone more weight. Default=1
+                    beta (int or float): exponent on distance, higher beta give distance more weight. Default=1
+                Example:
+                    ant_colony = AntColony(german_distances, 100, 20, 2000, 0.95, alpha=1, beta=2)
+                """
+                self.distances = distances
+                self.pheromone = np.ones(self.distances.shape) / len(distances)
+                self.all_inds = range(len(distances))
+                self.n_ants = n_ants
+                self.n_best = n_best
+                self.n_iterations = n_iterations
+                self.decay = decay
+                self.alpha = alpha
+                self.beta = beta
+
+            def run(self):
+                shortest_path = None
+                all_time_shortest_path = ("placeholder", np.inf)
+                for i in range(self.n_iterations):
+                    all_paths = self.gen_all_paths()
+                    self.spread_pheronome(all_paths, self.n_best, shortest_path=shortest_path)
+                    shortest_path = min(all_paths, key=lambda x: x[1])
+                    # print (shortest_path)
+                    if shortest_path[1] < all_time_shortest_path[1]:
+                        all_time_shortest_path = shortest_path
+                    self.pheromone * self.decay
+                return all_time_shortest_path
+
+            def spread_pheronome(self, all_paths, n_best, shortest_path):
+                sorted_paths = sorted(all_paths, key=lambda x: x[1])
+                for path, dist in sorted_paths[:n_best]:
+                    for move in path:
+                        self.pheromone[move] += 1.0 / self.distances[move]
+
+            def gen_path_dist(self, path):
+                total_dist = 0
+                for ele in path:
+                    total_dist += self.distances[ele]
+                return total_dist
+
+            def gen_all_paths(self):
+                all_paths = []
+                for i in range(self.n_ants):
+                    path = self.gen_path(0)
+                    all_paths.append((path, self.gen_path_dist(path)))
+                return all_paths
+
+            def gen_path(self, start):
+                path = []
+                visited = set()
+                visited.add(start)
+                prev = start
+                for i in range(len(self.distances) - 1):
+                    move = self.pick_move(self.pheromone[prev], self.distances[prev], visited)
+                    path.append((prev, move))
+                    prev = move
+                    visited.add(move)
+                path.append((prev, start))  # going back to where we started
+                return path
+
+            def pick_move(self, pheromone, dist, visited):
+                pheromone = np.copy(pheromone)
+                pheromone[list(visited)] = 0
+
+                row = pheromone ** self.alpha * ((1.0 / dist) ** self.beta)
+
+                norm_row = row / row.sum()
+                move = np_choice(self.all_inds, 1, p=norm_row)[0]
+                return move
+
+        distances = np.array(data_ACO)
+
+        ant_colony = AntColony(distances, 1, 1, 100, 0.95, alpha=1, beta=1)
+        shortest_path = ant_colony.run()
+        print("shorted_path: {}".format(shortest_path))
+        file_data.writelines(">>>" + str("shortest_path: ") +str(shortest_path)+ "\n")
+
+
+        #for each in shortest_path[0]:
+            #print(each[0])
+
+        G = nx.Graph()
+
+        for each in particles:
+            G.add_node(each[0], pos=(each[1][0], each[1][1]))
+
+        # pos = nx.get_node_attributes(G, 'pos')
+
+        pos = {}
+
+        for each in particles:
+            pos[each[0]] = (each[1][0], each[1][1])
+
+        """# nx.draw_networkx_labels(G, pos)
+        nx.draw_networkx(G, pos=pos)
+
+        #H = nx.Graph()
+
+        for each in leader_node:
+            G.add_node(each[1][0],pos=(each[1][1][0],each[1][1][1]))
+
+
+
+        # pos = nx.get_node_attributes(G, 'pos')
+
+        pos = {}
+
+        for each in leader_node:
+            pos[each[1][0]] = (each[1][1][0], each[1][1][1])"""
+
+        simplified_cluster_number = []
+
+        for j in cluster_list:
+            flag = True
+            temp = []
+            for k in range(1, len(j)):
+                if flag == True:
+                    for h in range(0, len(j[k])):
+                        temp.append(j[k][h][0])
+                    flag = False
+                break
+            if len(temp) > 0:
+                simplified_cluster_number.append(temp)
+
+        # print(simplified_cluster_number)
+
+        """for i in range(0, len(leader_node)):
+            # for j in simplified_cluster_number:
+            for k in range(0, len(simplified_cluster_number[i])):
+                # print(leader_node[i][1][0],simplified_cluster_number[i][k])
+                if leader_node[i][1][0] != simplified_cluster_number[i][k]:
+                    G.add_edge(leader_node[i][1][0], simplified_cluster_number[i][k])"""
+
+        # nx.draw_networkx_labels(G, pos)
+        nx.draw_networkx(G, pos=pos,node_color='yellow', with_labels=True)
+
+        H = nx.Graph()
+
+        for each in leader_node:
+            # print(each[1][0], each[1][1][0], each[1][1][1])
+            H.add_node(each[1][0], pos=(each[1][1][0], each[1][1][1]))
+
+        pox = {}
+
+        for each in leader_node:
+            pox[each[1][0]] = (each[1][1][0], each[1][1][1])
+
+
+        for each in shortest_path[0]:
+            H.add_edge(leader_coordinates[each[0]][0],leader_coordinates[each[1]][0],color='g',weight=2)
+
+        pos = nx.circular_layout(H)
+
+        edges = H.edges()
+        colors = [H[u][v]['color'] for u, v in edges]
+        weights = [H[u][v]['weight'] for u, v in edges]
+
+
+
+
+
+        nx.draw_networkx(H, pox, node_size=600, node_color='red',edges=edges, edge_color=colors, width=weights)
+
+        plt.title("ACO SHORTEST PATH")
+        plt.xlabel('X-AXIS')
+        plt.ylabel('Y-AXIS')
+        # Limits for the Y  and Yaxis
+        incx = (len(cluster_list) ** 0.5)
+        # plt.ylim(0, breadth)
+        # plt.xlim(0, length)
+        plt.xticks(np.arange(0, length + 1, length // incx))
+        plt.yticks(np.arange(0, breadth + 1, breadth // incx))
+        # plt.plot([lambda x: x[1][0] for x in particles],[lambda y: y[1][1] for y in particles[1][1]],'ro')
+        plt.grid()
+        #plt.savefig("WSN_labels2.png")
+        plt.show()
+
+
+
+
         time.sleep(4)
         file_data.close()
+
         self.__init__()
+
 
 
 
