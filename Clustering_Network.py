@@ -419,6 +419,10 @@ class wireless_sensor_networks:
         plt.savefig("WSN_CLUSTER.png")
         plt.show()
 
+
+        print("################################")
+        print(cluster_list)
+
         self.analyze(length,breadth,cluster_list,particles, file_data)
 
 
