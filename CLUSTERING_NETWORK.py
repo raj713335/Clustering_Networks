@@ -13,6 +13,18 @@ from numpy.random import choice as np_choice
 global blacklist
 blacklist = []
 
+global temporary_distance_first_to_origin
+
+global total_distance_ACO
+
+
+global iteration_measure
+
+
+
+
+
+
 
 
 
@@ -437,7 +449,7 @@ class wireless_sensor_networks:
         main_flag = True
 
         for each in cluster_list:
-            print(len(each[1]))
+            #print(len(each[1]))
             lengthx = len(each[1])
             if int(lengthx) == int(0):
                 main_flag = False
@@ -445,7 +457,19 @@ class wireless_sensor_networks:
         print("##########")
         print(main_flag)
 
+        global iteration_measure
+        iteration_measure=0
+
+        global total_distance_ACO
+        total_distance_ACO=0
+        temp_ACO = 0
+
+
         while (main_flag != False):
+
+
+
+            iteration_measure+=1
 
             leader_node = []
 
@@ -473,13 +497,20 @@ class wireless_sensor_networks:
 
             file_data.writelines("THE LEADER NODES IN RESPECTIVE CLUSTERS\n")
             for row in leader_node:
-                print(row)
+                #print(row)
                 file_data.writelines(">>>" + str(row) + "\n")
 
             print(leader_node)
 
-            for row in leader_coordinates:
-                print(row)
+            #for row in leader_node:
+                #print("#$$$$$$$$$$$$$$$$$$$$$$$$$")
+                #print(row[1][1][0],row[1][1][1])
+
+
+            global temporary_distance_first_to_origin
+            temporary_distance_first_to_origin=(((leader_node[0][1][1][0]**2)+(leader_node[0][1][1][1]**2))**0.5)
+
+            print(temporary_distance_first_to_origin)
 
             xxx = -1
             yyy = -1
@@ -492,8 +523,8 @@ class wireless_sensor_networks:
                 for row in each[1]:
                     yyy += 1
                     if leader_coordinates[xxx][0] == row[0]:
-                        print(leader_coordinates[xxx][0], row[0])
-                        print(cluster_list[xxx][1][yyy])
+                        #print(leader_coordinates[xxx][0], row[0])
+                        #print(cluster_list[xxx][1][yyy])
                         blacklist.append(cluster_list[xxx][1][yyy][0])
                         del cluster_list[xxx][1][yyy]
                         break
@@ -507,11 +538,11 @@ class wireless_sensor_networks:
                     print(cluster_list[xxx][1][yyy])
                 yyy=-1"""
 
-            for each in cluster_list:
-                print(each)
+            #for each in cluster_list:
+                #print(each)
 
-            for each in cluster_list:
-                print(len(each[1]))
+            #for each in cluster_list:
+                #print(len(each[1]))
 
 
             """leader_node=[]
@@ -561,13 +592,16 @@ class wireless_sensor_networks:
 
 
 
-            self.visualize_leader(length,breadth,cluster_list,particles,leader_node,file_data)
-            self.ACO_fine_tuning(leader_coordinates,leader_node,file_data,breadth,length,cluster_list,particles)
+            self.visualize_leader(length,breadth,cluster_list,particles,leader_node,file_data,total_distance_ACO)
+            ACO=self.ACO_fine_tuning(leader_coordinates,leader_node,file_data,breadth,length,cluster_list,particles,total_distance_ACO)
+            temp_ACO+=ACO
+
+        print("AFTER ALL ITERATION TOTAL DISTANCE IS : {} ".format(temp_ACO))
 
 
 
 
-    def visualize_leader(self,length,breadth,cluster_list,particles,leader_node,file_data):
+    def visualize_leader(self,length,breadth,cluster_list,particles,leader_node,file_data,total_distance_ACO):
 
 
 
@@ -661,8 +695,8 @@ class wireless_sensor_networks:
 
 
 
-    def ACO_fine_tuning(self,leader_coordinates,leader_node,file_data,breadth,length,cluster_list,particles):
-        print(leader_coordinates)
+    def ACO_fine_tuning(self,leader_coordinates,leader_node,file_data,breadth,length,cluster_list,particles,total_distance_ACO):
+        #print(leader_coordinates)
 
         data_ACO=[]
 
@@ -676,8 +710,8 @@ class wireless_sensor_networks:
                     temp.append(distance)
             data_ACO.append(temp)
 
-        for each in data_ACO:
-            print(each)
+        """for each in data_ACO:
+            print(each)"""
 
         class AntColony(object):
 
@@ -767,6 +801,21 @@ class wireless_sensor_networks:
         file_data.writelines(">>>" + str("shortest_path: ") +str(shortest_path)+ "\n")
 
 
+        print(iteration_measure,(shortest_path[1]+temporary_distance_first_to_origin))
+        print(temporary_distance_first_to_origin)
+
+        if iteration_measure==1:
+            total_distance_ACO=0
+
+
+        print(total_distance_ACO)
+        total_distance_ACO+=shortest_path[1]+temporary_distance_first_to_origin
+
+
+
+        print("TOTAL DISTANCE AFTER ITERATION {} is {} ".format(iteration_measure,total_distance_ACO))
+
+
         #for each in shortest_path[0]:
             #print(each[0])
 
@@ -827,16 +876,16 @@ class wireless_sensor_networks:
 
         K = nx.Graph()
 
-        print("################################################################")
-        print(blacklist)
+        #print("################################################################")
+        #print(blacklist)
 
         pos = {}
 
         for each in particles:
             for eachx in blacklist:
                 if each[0]==eachx:
-                    print(each[0],eachx)
-                    print("################################################################")
+                    #print(each[0],eachx)
+                    #print("################################################################")
                     K.add_node(each[0], pos=(each[1][0], each[1][1]))
                     pos[each[0]] = (each[1][0], each[1][1])
 
@@ -889,6 +938,8 @@ class wireless_sensor_networks:
         plt.grid()
         plt.savefig("ACO.png")
         plt.show()
+
+        return (total_distance_ACO)
 
 
 
