@@ -152,6 +152,11 @@ class wireless_sensor_networks:
     def sergation_of_nodes_in_cluster(self,length,breadth,nodes,cluster_list,particles,file_data):
 
 
+        print("XXXXXXXXXXX")
+        print(particles)
+        print(cluster_list)
+
+
 
 
         for each_partilcle in particles:
@@ -312,7 +317,7 @@ class wireless_sensor_networks:
         particles=[]
         battery=0
         for i in range(0,len(listx),node_interval):
-            particles.append([id,[listx[i][0],listx[i][1]],[battery],time])
+            particles.append([id,[listx[i][0]+round(random.random(),2),listx[i][1]+round(random.random(),2)],[battery],time])
             time+=time_interval
             id+=1
 
@@ -367,7 +372,7 @@ class wireless_sensor_networks:
 
                 id += 1
                 timex+=time_interval
-                particles.append([id, [x_cordinate, y_cordinate], [battery], timex])
+                particles.append([id, [x_cordinate+round(random.random(),2), y_cordinate+round(random.random(),2)], [battery], timex])
 
 
             breadth_start = breadth_start - breadth_incx
@@ -578,7 +583,7 @@ class wireless_sensor_networks:
             for row in leader_coordinates:
                 print(row)"""
 
-            for each in cluster_list:
+            """for each in cluster_list:
                 # print(len(each[1]))
                 lengthx = len(each[1])
                 if int(lengthx) == int(0):
@@ -588,7 +593,7 @@ class wireless_sensor_networks:
             print(main_flag)
 
             if main_flag==False:
-                break
+                break"""
 
 
 
@@ -596,8 +601,21 @@ class wireless_sensor_networks:
             ACO=self.ACO_fine_tuning(leader_coordinates,leader_node,file_data,breadth,length,cluster_list,particles,total_distance_ACO)
             temp_ACO+=ACO
 
-        print("AFTER ALL ITERATION TOTAL DISTANCE IS : {} ".format(temp_ACO))
+            for each in cluster_list:
+                # print(len(each[1]))
+                lengthx = len(each[1])
+                if int(lengthx) == int(0):
+                    main_flag = False
 
+            print("##########")
+            print(main_flag)
+
+            if main_flag == False:
+                break
+
+
+
+        print("AFTER ALL ITERATION TOTAL DISTANCE IS : {} ".format(temp_ACO))
 
 
 
@@ -652,10 +670,14 @@ class wireless_sensor_networks:
 
         for i in range(0,len(leader_node)):
             #for j in simplified_cluster_number:
-            for k in range(0,len(simplified_cluster_number[i])):
-                #print(leader_node[i][1][0],simplified_cluster_number[i][k])
-                if leader_node[i][1][0]!=simplified_cluster_number[i][k]:
-                    G.add_edge(leader_node[i][1][0],simplified_cluster_number[i][k])
+            try:
+                for k in range(0,len(simplified_cluster_number[i])):
+                    #print(leader_node[i][1][0],simplified_cluster_number[i][k])1
+                    if leader_node[i][1][0]!=simplified_cluster_number[i][k]:
+                        G.add_edge(leader_node[i][1][0],simplified_cluster_number[i][k])
+            except:
+                break
+
 
 
 
@@ -791,6 +813,8 @@ class wireless_sensor_networks:
 
                 norm_row = row / row.sum()
                 move = np_choice(self.all_inds, 1, p=norm_row)[0]
+                #print("CCCCCCCCCCCCCCCCCDDDDDDDDDD")
+                #print(move)
                 return move
 
         distances = np.array(data_ACO)
