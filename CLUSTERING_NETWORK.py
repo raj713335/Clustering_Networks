@@ -394,6 +394,8 @@ class wireless_sensor_networks:
 
     def visualization(self,length,breadth,cluster_list,particles,file_data):
 
+        plt.figure(figsize=(8.5, 11))
+
 
         G=nx.Graph()
 
@@ -410,35 +412,47 @@ class wireless_sensor_networks:
 
 
         #nx.draw_networkx_labels(G, pos)
-        nx.draw_networkx(G,pos=pos)
+        nx.draw_networkx(G,pos=pos,font_size=7,node_color='red',alpha=0.8,label="Nodes")
 
 
-        plt.title("CLUSTERING NETWORK'S")
+
+
+        plt.title("Node Deployment")
         plt.xlabel('X-AXIS')
         plt.ylabel('Y-AXIS')
         # Limits for the Y  and Yaxis
         incx=(len(cluster_list)**0.5)
-        #plt.ylim(0, breadth)
-        #plt.xlim(0, length)
+        # plt.ylim(0, breadth)
+        # plt.xlim(0, length)
+        plt.draw()
         plt.xticks(np.arange(0, length+1, length//incx))
         plt.yticks(np.arange(0, breadth+1, breadth//incx))
         #plt.plot([lambda x: x[1][0] for x in particles],[lambda y: y[1][1] for y in particles[1][1]],'ro')
+        #plt.legend(['Nodes'],loc='upper right',fontsize='x-small')
         plt.grid()
-        plt.savefig("WSN_labels.png")
+
+        plt.savefig("DATA/Node_Deployment.jpg",dpi=600)
         plt.show()
+
+        plt.figure(figsize=(8.5, 11))
 
         for each in cluster_list:
             for i in range(0, len(each[1])-1):
                 for j in range(i + 1, len((each[1]))):
-                    G.add_edge(each[1][i][0], each[1][j][0])
+                    G.add_edge(each[1][i][0], each[1][j][0],weight=1)
 
         #nx.draw(G,pos, with_labels=True)
-        nx.draw_networkx(G, pos=pos,with_labels=True)
+        nx.draw_networkx(G, pos=pos,with_labels=True,font_size=7,node_color='red',alpha=0.8,label="Nodes",width =0.4)
 
+        plt.title("Node Cluster")
+        plt.xlabel('X-AXIS')
+        plt.ylabel('Y-AXIS')
+        plt.draw()
         plt.xticks(np.arange(0, length + 1, length // incx))
         plt.yticks(np.arange(0, breadth + 1, breadth // incx))
         plt.grid()
-        plt.savefig("WSN_CLUSTER.png")
+        #plt.legend(['Nodes','Connecting Edges'],loc='upper right',fontsize='x-small',labelspacing=1.2)
+        plt.savefig("DATA/Node_cluster.jpg",dpi=600)
         plt.show()
 
 
@@ -621,7 +635,7 @@ class wireless_sensor_networks:
 
     def visualize_leader(self,length,breadth,cluster_list,particles,leader_node,file_data,total_distance_ACO):
 
-
+        plt.figure(figsize=(8.5, 11))
 
         G = nx.Graph()
 
@@ -684,7 +698,7 @@ class wireless_sensor_networks:
 
 
         # nx.draw_networkx_labels(G, pos)
-        nx.draw_networkx(G, pos=pos,with_labels=True)
+        nx.draw_networkx(G, pos=pos,with_labels=True,font_size=7,node_color='red',alpha=0.8,label="Nodes")
 
         H=nx.Graph()
 
@@ -697,9 +711,9 @@ class wireless_sensor_networks:
         for each in leader_node:
             pox[each[1][0]] = (each[1][1][0], each[1][1][1])
 
-        nx.draw_networkx(H, pox, node_size=700, node_color='green')
+        nx.draw_networkx(H, pox, node_size=700, node_color='green',font_size=7,alpha=0.8,label=" Leader Nodes")
 
-        plt.title("CLUSTERING NETWORK'S")
+        plt.title("Creation Of Leader Node")
         plt.xlabel('X-AXIS')
         plt.ylabel('Y-AXIS')
         # Limits for the Y  and Yaxis
@@ -708,9 +722,11 @@ class wireless_sensor_networks:
         # plt.xlim(0, length)
         plt.xticks(np.arange(0, length + 1, length // incx))
         plt.yticks(np.arange(0, breadth + 1, breadth // incx))
+        plt.draw()
         # plt.plot([lambda x: x[1][0] for x in particles],[lambda y: y[1][1] for y in particles[1][1]],'ro')
+        #plt.legend(['Nodes','Connecting Edges','Leader Nodes'],loc='upper right',fontsize='x-small',labelspacing=1.2)
         plt.grid()
-        plt.savefig("WSN_labels2.png")
+        plt.savefig("DATA/Leader_Node.jpg",dpi=600)
         plt.show()
 
 
@@ -843,6 +859,8 @@ class wireless_sensor_networks:
         #for each in shortest_path[0]:
             #print(each[0])
 
+        plt.figure(figsize=(8.5, 11))
+
         G = nx.Graph()
 
         for each in particles:
@@ -896,7 +914,7 @@ class wireless_sensor_networks:
                     G.add_edge(leader_node[i][1][0], simplified_cluster_number[i][k])"""
 
         # nx.draw_networkx_labels(G, pos)
-        nx.draw_networkx(G, pos=pos,node_color='yellow', with_labels=True)
+        nx.draw_networkx(G, pos=pos,node_color='yellow', with_labels=True,font_size=7,alpha=0.8,label="Nodes")
 
         K = nx.Graph()
 
@@ -920,7 +938,7 @@ class wireless_sensor_networks:
 
 
 
-        nx.draw_networkx(K, pos=pos, node_color='grey', with_labels=True)
+        nx.draw_networkx(K, pos=pos, node_color='grey', with_labels=True,font_size=7,alpha=0.8,label="Nodes")
 
         H = nx.Graph()
 
@@ -935,7 +953,7 @@ class wireless_sensor_networks:
 
 
         for each in shortest_path[0]:
-            H.add_edge(leader_coordinates[each[0]][0],leader_coordinates[each[1]][0],color='g',weight=2)
+            H.add_edge(leader_coordinates[each[0]][0],leader_coordinates[each[1]][0],color='green',weight=2)
 
         pos = nx.circular_layout(H)
 
@@ -947,7 +965,7 @@ class wireless_sensor_networks:
 
 
 
-        nx.draw_networkx(H, pox, node_size=600, node_color='red',edges=edges, edge_color=colors, width=weights)
+        nx.draw_networkx(H, pox, node_size=600, node_color='red',edges=edges, edge_color=colors, width=weights,font_size=7,alpha=0.8,label="Nodes")
 
         plt.title("ACO SHORTEST PATH")
         plt.xlabel('X-AXIS')
@@ -958,9 +976,11 @@ class wireless_sensor_networks:
         # plt.xlim(0, length)
         plt.xticks(np.arange(0, length + 1, length // incx))
         plt.yticks(np.arange(0, breadth + 1, breadth // incx))
+        plt.draw()
         # plt.plot([lambda x: x[1][0] for x in particles],[lambda y: y[1][1] for y in particles[1][1]],'ro')
         plt.grid()
-        plt.savefig("ACO.png")
+        #plt.legend(['Nodes','Deactive Nodes','Leader Nodes','Connecting Edges'],loc='upper right', fontsize='x-small',labelspacing=1.2)
+        plt.savefig("DATA/ACO.jpg",dpi=600)
         plt.show()
 
         return (total_distance_ACO)
