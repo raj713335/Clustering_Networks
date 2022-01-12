@@ -21,10 +21,11 @@ publication descriptionIn this paper, we have proposed different deployment stra
 
 </br>
 
-# DOI
+# Additional Details
 
 </br>
 <strong>  <a href="https://www.eurekaselect.com/article/113474">DOI : </a></strong> 10.2174/2210327911666210120122610
+</br>
 
 ```
 Author(s): Monojit Dey, Arnab Das, Avishek Banerjee, Ujjwal Kumar Kamila and Samiran Chattopadhyay
