@@ -23,10 +23,6 @@ publication descriptionIn this paper, we have proposed different deployment stra
 
 # Additional Details
 
-</br>
-<strong>  <a href="https://www.eurekaselect.com/article/113474">DOI : </a></strong> 10.2174/2210327911666210120122610
-
-</br>
 
 ```
 Author(s): Monojit Dey, Arnab Das, Avishek Banerjee, Ujjwal Kumar Kamila and Samiran Chattopadhyay
@@ -37,7 +33,7 @@ Published on: 20 January, 2021
 
 Page: [928 - 950]Pages: 23
 
-DOI: 10.2174/2210327911666210120122610
+<strong>  <a href="https://www.eurekaselect.com/article/113474">DOI : </a></strong>  10.2174/2210327911666210120122610
 
 Price: $65
 
