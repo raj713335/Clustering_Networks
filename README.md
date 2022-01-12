@@ -20,7 +20,8 @@ publication descriptionIn this paper, we have proposed different deployment stra
 <strong>Conclusion: </strong>In this paper, efficient Wireless Sensor Networks have been configured considering energy minimization as the prime concern. To minimize the energy consumption a modified ACO algorithm has been proposed. In our work, the minimization of energy consumption leads to an increment of the lifetime of WSN to a significant margin theoretically. The obtained result has been compared with the existing literature and it has been found that the proposed algorithm produced a better result than the existing literature.
 
 </br>
-## DOI : 
+# DOI : 
+</br>
 <strong>  <a href="https://www.eurekaselect.com/article/113474">DOI : </a></strong> 10.2174/2210327911666210120122610
 
 ```
