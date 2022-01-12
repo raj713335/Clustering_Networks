@@ -1,11 +1,17 @@
 # Clustering Networks Abstract
 
 <strong>Construction of Efficient Wireless Sensor Networks for Energy Minimization using a Modified ACO Algorithm</strong>
-publication dateJan 26, 2021  publication descriptionInternational Journal of Sensors, Wireless Communications and Control
+publication date Jan 26, 2021  publication descriptionInternational Journal of Sensors, Wireless Communications and Control
+
+</br>
 
 publication descriptionIn this paper, we have proposed different deployment strategies and have applied area-wise clustering along with modified Ant Colony Optimization to minimize energy consumption.
 
+</br>
+
 <strong>Background: </strong>Previously some deployment strategies were used to enhance the lifetime of WSN. In our research, we have applied some novel deployment strategies like random, spiral, and S-pattern along with a novel area-wise clustering process to get better results than the existing literature as shown in Table 4.
+
+</br>
 
 <strong>Objective: </strong>The main objective of the research article is to enhance the lifetime of Wireless Sensor Network with the help of different deployment strategies like random, spiral, and S-pattern). A novel clustering process (i.e., area-wise clustering), and a Meta-heuristic algorithm (modified ACO) are applied.
 
