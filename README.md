@@ -33,8 +33,9 @@ Published on: 20 January, 2021
 
 Page: [928 - 950]Pages: 23
 
-<strong>  <a href="https://www.eurekaselect.com/article/113474">DOI : </a></strong>  10.2174/2210327911666210120122610
+DOI : 10.2174/2210327911666210120122610
 
 Price: $65
 
 ```
+<strong>  <a href="https://www.eurekaselect.com/article/113474">DOI : 10.2174/2210327911666210120122610
